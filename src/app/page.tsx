@@ -1,7 +1,8 @@
 import Card from "@/components/Card";
 import Navbar from "@/components/Navbar";
 import { conn } from "@/libs/mysql";
-import { MangaMainInfo } from "./api/mangas/route";
+import { MangaMainInfo } from "./models/manga";
+
 
 async function mangas() {
   try {
