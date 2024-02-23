@@ -1,3 +1,25 @@
+
+# Manga reader in nextjs
+
+# Screenshots
+
+### Home page
+
+![Home page](/screenshots/home_mangado.png)
+
+### Library
+
+![Library](/screenshots/biblioteca_mangado.png)
+
+### Manga Detais
+
+![Manga Details](/screenshots/details_mangado.png)
+
+### Mnaga View
+
+![Viewer](/screenshots/viewer_mangado.png)
+
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started

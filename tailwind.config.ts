@@ -15,6 +15,36 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function ({addUtilities}: {addUtilities:any}){
+      const newUtilities = {
+      ".scrollbar-ms" :{
+        scrollbarWidth: "thin",
+        scrollbarColor: "rgb(55, 54, 66) white",
+        
+      },
+      ".scrollbar-webkit":{
+        "&::-webkit-scrollbar":{
+          width: "8px",
+         
+        },
+        "&::-webkit-scrollbar-track":{
+          background: "white",
+          borderRadius: "20px",
+        },
+        "&::-webkit-scrollbar-thumb":{
+          background: "rgb(55, 54, 66)",
+          borderRadius: "20px",
+          border: "1px solid white"
+        },
+      },
+      '.capitalize-first:first-letter': {
+        textTransform: 'uppercase',
+      },
+    }
+    addUtilities(newUtilities, ["responsive", "hover"])
+    }
+  ],
+  darkMode: 'class',
 };
 export default config;
