@@ -4,9 +4,9 @@ import Navbar from '@/components/Navbar'
 import React from 'react'
 import { ContextProvider } from '../context/FilterContextProvider'
 import { conn } from '@/libs/mysql'
-import { MangaMainInfo } from '../api/mangas/route'
+
 import Card from '@/components/Card'
-import { Tag } from '../models/manga'
+import { MangaMainInfo, Tag } from '../models/manga'
 
 
 async function getFilterResults(params:any) {

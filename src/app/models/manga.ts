@@ -27,3 +27,11 @@ export interface Tag{
     id: number
     name: string
 }
+export interface MangaMainInfo{
+    id: number
+    name: string
+    type: string
+    score: string
+    cover: string
+}
+
