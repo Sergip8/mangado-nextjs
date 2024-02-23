@@ -36,10 +36,17 @@ async function getFilterResults(params:any) {
       tagsQ = `AND id IN (SELECT manga FROM manga_tag WHERE tag IN (${params.tags}))`
     }
   }
-
+try {
   return await conn.query<MangaMainInfo[]>(`SELECT * FROM manga_main_info WHERE name LIKE ? ${type} ${dem} ${tagsQ}`,[
     `%${search}%`
   ])
+  
+} catch (error) {
+  return []
+}
+  finally{
+    conn.end()
+  }
 }
 
 
