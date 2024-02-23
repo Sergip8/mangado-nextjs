@@ -19,9 +19,9 @@ import serverlessMysql  from "serverless-mysql";
 // })
 export const conn = serverlessMysql({
     config:{
-        host: 'mangado.caampijxkitk.us-east-1.rds.amazonaws.com',
-        user: 'admin',
-        password: '86072052228',
+        host: process.env.DB_HOST,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASS,
         port: 3306,
         database: "mangado"
     }
