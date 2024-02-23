@@ -1,8 +1,9 @@
 import React from "react";
 import Image from "next/image";
 import { montserrat } from "@/app/styles/fonts";
-import { MangaMainInfo } from "@/app/api/mangas/route";
+
 import Link from "next/link";
+import { MangaMainInfo } from "@/app/models/manga";
 
 function Card(manga: MangaMainInfo) {
  

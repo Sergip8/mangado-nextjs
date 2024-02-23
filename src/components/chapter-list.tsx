@@ -1,4 +1,4 @@
-import { MangaMainInfo } from '@/app/api/mangas/route'
+
 import { Chapter } from '@/app/models/manga'
 import React from 'react'
 import Image from "next/image";

@@ -1,6 +1,7 @@
-import { MangaMainInfo } from '@/app/api/mangas/route'
+
 import React from 'react'
 import Card from './Card'
+import { MangaMainInfo } from '@/app/models/manga'
 
 function SideBarDetails({suggested}:{suggested: MangaMainInfo[]} ) {
     
