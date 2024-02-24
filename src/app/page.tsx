@@ -9,6 +9,7 @@ async function mangas() {
     return await conn.query<MangaMainInfo[]>("SELECT * FROM manga_main_info");
     
   } catch (error) {
+    console.log(error)
     return []
   }finally{
     conn.end()

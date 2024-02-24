@@ -64,6 +64,7 @@ async function Biblioteca({ searchParams  }:{searchParams :any}) {
     try {
       return await conn.query<Tag[]>("SELECT tags.name, tags.id FROM tags")
     } catch (error) {
+      console.log(error)
       return []
     }finally{
       conn.end()
