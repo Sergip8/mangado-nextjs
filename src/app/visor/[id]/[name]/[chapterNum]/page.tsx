@@ -6,44 +6,44 @@ import Navbar from "@/components/Navbar";
 import ChapterListSelect from "@/components/ChapterListSelect";
 import PrevNext from "@/components/PrevNext";
 import Link from "next/link";
+import { RowDataPacket } from "mysql2";
 
 
 async function loadChapterPages(mangaId: number, cap_num: number) {
   try {
-    return await conn.query<Page[]>(
+    const [res] = await conn.query<RowDataPacket[]>(
       "SELECT * FROM mangado.chapters_img as pages join chapters on chapters.mangaId = ? and chapters.numero = ? where pages.chapterId = chapters.id",
       [mangaId, cap_num]
     );
+    return res
   } catch (error) {
     return []
   }finally{
-    conn.end()
+    
   }
 }
 
 async function loadChapterList(mangaId: number) {
   try {
-    return await conn.query<Chapter[]>(
+    return await conn.query<RowDataPacket[]>(
       "SELECT chapters.* FROM chapters where chapters.mangaId = ?",
       [mangaId]
     );
     
   } catch (error) {
     return []
-  }finally{
-    conn.end()
   }
 }
 async function loadMangaInfo(mangaId: number) {
   try {
-    return await conn.query<any>(
+    return await conn.query<RowDataPacket[]>(
       "SELECT manga_main_info.name, manga_main_info.id FROM manga_main_info where id = ?",
       [mangaId]
     );
   } catch (error) {
-    
+    return []
   }
-  conn.end()
+  
 }
 
 async function ViewChapter({
@@ -54,8 +54,8 @@ async function ViewChapter({
   searchParams: any;
 }) {
   const pages = await loadChapterPages(params.id, params.chapterNum);
-  const chapterList = await loadChapterList(params.id);
-  const mangaData = await loadMangaInfo(params.id);
+  const [chapterList] = await loadChapterList(params.id);
+  const [mangaData]  = await loadMangaInfo(params.id);
 
   console.log(chapterList);
   return (
@@ -93,7 +93,7 @@ async function ViewChapter({
         </div>
       </div>
       {pages.map((p, i) => (
-        <div key={p.id}>
+        <div key={i}>
           <Image
             priority={i < 4}
             

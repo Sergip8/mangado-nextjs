@@ -19,7 +19,7 @@ const demography = ["seinen", "shoujo", "shounen", "josei", "kodomo"];
 
 
 
-function FilterSideBar({tags, isMobile, params}:{tags:Tag[], isMobile: boolean, params:any}) {
+function FilterSideBar({tags, isMobile, params}:{tags:any, isMobile: boolean, params:any}) {
     
     
   return (

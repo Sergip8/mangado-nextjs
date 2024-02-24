@@ -7,6 +7,7 @@ import { conn } from '@/libs/mysql'
 
 import Card from '@/components/Card'
 import { MangaMainInfo, Tag } from '../models/manga'
+import { RowDataPacket } from 'mysql2/promise'
 
 
 async function getFilterResults(params:any) {
@@ -37,43 +38,38 @@ async function getFilterResults(params:any) {
     }
   }
 try {
-  return await conn.query<MangaMainInfo[]>(`SELECT * FROM manga_main_info WHERE name LIKE ? ${type} ${dem} ${tagsQ}`,[
+  const res = await conn.query<RowDataPacket[]>(`SELECT * FROM manga_main_info WHERE name LIKE ? ${type} ${dem} ${tagsQ}`,[
     `%${search}%`
   ])
-  
+  return res
 } catch (error) {
   return []
 }
-  finally{
-    conn.end()
-  }
 }
 
 
 async function Biblioteca({ searchParams  }:{searchParams :any}) {
-  let results:MangaMainInfo[] = []
+  let results:RowDataPacket[] = []
   
   if(searchParams){
     if(searchParams.type != "" || searchParams.tags !== "" || searchParams.dem !="" || searchParams.q !=""  ){
-      results = await getFilterResults(searchParams)
+      [results] = await getFilterResults(searchParams)
       console.log(results)
       
     }
   }
   async function loadTags() {
     try {
-      return await conn.query<Tag[]>("SELECT tags.name, tags.id FROM tags")
+      return await conn.execute("SELECT tags.name, tags.id FROM tags")
     } catch (error) {
       console.log(error)
       return []
-    }finally{
-      conn.end()
     }
     
 }
   console.log(searchParams)
-  const tags = await loadTags()
-  
+  const [tags] = await loadTags()
+  console.log(tags)
   return (
     <div className='container mx-auto'>
         <Navbar isView={false}/>
@@ -89,7 +85,7 @@ async function Biblioteca({ searchParams  }:{searchParams :any}) {
             {results.map((r, i) => (
               <div key={i} className='m-2'>
 
-                <Card  {...r}/>
+                <Card  manga={r}/>
               </div>
 
             ))}

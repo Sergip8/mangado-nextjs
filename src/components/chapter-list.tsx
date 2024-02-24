@@ -13,13 +13,15 @@ function ChapterList({chapters, params}:{chapters:Chapter[], params:any}) {
 
       {chapters.length>0 && 
       
-      <ul className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 w-full pt-5 h-[500px] md:overflow-y-scroll p-5">
+      <ul className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 w-full pt-5 max-h-96 md:overflow-y-scroll p-5">
         {chapters.map((c,i) =>(
                <Link
                key={i}
-               href={`/visor/${params.id}/${params.name}/${c.numero}`}
+               href="/visor/[id]/[name]/[chapterNum]"
+               as={`/visor/${params.id}/${params.name}/${c.numero}`}
+               className=' '
                >
-         <li className=" py-3 sm:pb-4 cursor-pointer w-full  px-2">
+         <li className=" h-fit py-3 sm:pb-4 cursor-pointer w-full  px-2">
             <div className="flex items-center space-x-4 rtl:space-x-reverse">
                
                <div className="flex-1 min-w-0">

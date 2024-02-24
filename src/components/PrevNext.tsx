@@ -11,8 +11,8 @@ function PrevNext({
   params: any;
   searchParams: any;
 }) {
-  const capNum = Number(params.chapterNum);
-
+  const capNum = params.chapterNum;
+ 
   return (
     <div>
       <div className="flex  gap-3 items-center">

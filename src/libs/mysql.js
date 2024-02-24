@@ -1,4 +1,4 @@
-import serverlessMysql  from "serverless-mysql";
+import mysql from "mysql2/promise";
 
 // export const conn = serverlessMysql({
 //     config:{
@@ -17,12 +17,12 @@ import serverlessMysql  from "serverless-mysql";
 //         database: "ezyro_35998756_mangado"
 //     }
 // })
-export const conn = serverlessMysql({
-    config:{
+export const conn = await mysql.createConnection({
+    
         host: process.env.DB_HOST,
         user: process.env.DB_USER,
         password: process.env.DB_PASS,
         port: 3306,
         database: "mangado"
-    }
+   
 })

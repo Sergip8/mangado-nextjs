@@ -2,24 +2,21 @@ import Card from "@/components/Card";
 import Navbar from "@/components/Navbar";
 import { conn } from "@/libs/mysql";
 import { MangaMainInfo } from "./models/manga";
+import { RowDataPacket } from "mysql2/promise";
 
 
 async function mangas() {
   try {
-    
-    return await conn.query<MangaMainInfo[]>("SELECT * FROM manga_main_info");
+    const [results] = await conn.execute<RowDataPacket[]>("SELECT * FROM manga_main_info");
+    return results
     
   } catch (error) {
-    console.log(error)
     return []
-  }finally{
-    conn.end()
   }
 }
 
 export default async function Home() {
   const mangasList = await mangas();
-  
   return (
     <main>
       <div>
@@ -28,7 +25,7 @@ export default async function Home() {
           <div className="flex flex-wrap ">
             {mangasList.map((m,i) => (
               <div key={i} className="mx-2 my-2">
-                <Card  {...m} />
+                <Card  manga={m} />
 
               </div>
             ))}

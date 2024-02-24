@@ -11,7 +11,7 @@ function ChapterListSelect({chapters, mangaName, mangaId, screenParam, chapterPa
   return (
     <div>
         <select
-        defaultValue={Number(chapterParam)}
+        defaultValue={chapterParam}
          onChange={(e) => {
            {
             router.push(`

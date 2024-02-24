@@ -31,16 +31,17 @@ async function loadMangaSuggested(mangaId) {
   } catch (error) {
     return []
   }finally{
-    conn.end()
+    
+
   }
 }
 
 
 async function DetailsMangaPage({params}) {
-  const mangaDetails = await loadMangaDetails(params.id)
-  const tags = await loadMangaTags(params.id)
-  const chapters = await loadChapters(params.id)
-  const suggested = await loadMangaSuggested(params.id)
+  const [mangaDetails] = await loadMangaDetails(params.id)
+  const [tags] = await loadMangaTags(params.id)
+  const [chapters] = await loadChapters(params.id)
+  const [suggested] = await loadMangaSuggested(params.id)
   mangaDetails[0]["tags"] = tags
   return (
     <div>

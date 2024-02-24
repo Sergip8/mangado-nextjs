@@ -9,7 +9,7 @@ function SideBarDetails({suggested}:{suggested: MangaMainInfo[]} ) {
     <div>
       {suggested.map((m, i) => (
               <div key={i} className="mx-2 my-2">
-                <Card {...m} />
+                <Card manga={m} />
 
               </div>
             ))}
