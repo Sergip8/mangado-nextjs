@@ -6,6 +6,7 @@ import { MangaMainInfo } from "./models/manga";
 
 async function mangas() {
   try {
+    
     return await conn.query<MangaMainInfo[]>("SELECT * FROM manga_main_info");
     
   } catch (error) {
