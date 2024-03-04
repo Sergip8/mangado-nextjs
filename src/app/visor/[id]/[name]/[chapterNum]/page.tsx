@@ -57,7 +57,6 @@ async function ViewChapter({
   const [chapterList] = await loadChapterList(params.id);
   const [mangaData]  = await loadMangaInfo(params.id);
 
-  console.log(chapterList);
   return (
     <div>
       <Navbar isView={true}/>

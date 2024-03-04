@@ -9,12 +9,14 @@ type filterContextType = {
     search: string,
     showMovilFilter: boolean,
     sort: string,
+    currPage: number,
     setTags: (value:number[]) => void,
     setType: (value: string) => void,
     setDemography: (value: string) => void,
     setSearch: (value: string) => void,
     setShowMovilFilter: (value: boolean) => void,
     setSort: (value: string) => void,
+    setCurrPage: (value: number) => void,
   
 }
 const filterContextDefault: filterContextType = {
@@ -24,12 +26,15 @@ const filterContextDefault: filterContextType = {
     search: "",
     showMovilFilter: false,
     sort: "",
+    currPage: 1,
     setTags: () => {},
     setType: () => {},
     setDemography: () => {},
     setSearch: () => {},
     setShowMovilFilter: () => {},
     setSort: () => {},
+    setCurrPage: () => {},
+
 }
 const FilterContext = createContext<filterContextType>(filterContextDefault)
 
@@ -40,6 +45,7 @@ export const ContextProvider = ({children}:{children:ReactNode}) => {
     const [demography, setDemography] = useState<string>("")
     const [search, setSearch] = useState("");
     const [sort, setSort] = useState("");
+    const [currPage, setCurrPage] = useState(1);
     const [showMovilFilter, setShowMovilFilter] = useState<boolean>(false)
 
 
@@ -52,12 +58,14 @@ export const ContextProvider = ({children}:{children:ReactNode}) => {
             search,
             showMovilFilter,
             sort,
+            currPage,
             setTags,
             setType,
             setDemography,
             setSearch,
             setShowMovilFilter,
-            setSort
+            setSort,
+            setCurrPage,
         }}>
             {children}
 

@@ -5,22 +5,23 @@ import { useTheme } from 'next-themes'
 import Image from "next/image"
 
 export default function ThemeSwitch() {
-  const [mounted, setMounted] = useState(false)
+  const [image, setImage] = useState( '/icon-sun.svg' || '/icon-moon.svg')
   const { setTheme, resolvedTheme } = useTheme()
 
   function handleTheme() {
+    setImage(resolvedTheme === 'dark' ? '/icon-moon.svg' : '/icon-sun.svg')
     setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')
     localStorage.setItem('theme', resolvedTheme === 'dark' ? 'light' : 'dark')
     
   }
 
-  useEffect(() =>  setMounted(true), [])
+  
   console.log(resolvedTheme)
   return (
     <Image
-      src={resolvedTheme === 'light' ? '/icon-moon.svg' : '/icon-sun.svg'}
-      width={36}
-      height={36}
+      src={image}
+      width={30}
+      height={30}
       sizes="36x36"
       alt="Loading Light/Dark Toggle"
       priority={false}

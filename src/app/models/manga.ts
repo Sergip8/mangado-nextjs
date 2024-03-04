@@ -9,6 +9,7 @@ export interface Manga{
     description: string
     alt_titles: string
     other_titles: string
+    authors: any
     tags: any
     mangaId: string
 }
@@ -33,5 +34,6 @@ export interface MangaMainInfo{
     type: string
     score: string
     cover: string
+    status: string
 }
 

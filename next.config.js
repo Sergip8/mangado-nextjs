@@ -14,6 +14,12 @@ module.exports = {
           port: '',
           pathname: '/**',
         },
+        {
+          protocol: 'http',
+          hostname: 'mangado.sytes.net',
+          port: '',
+          pathname: '/**',
+        },
       ],
     },
     eslint: {

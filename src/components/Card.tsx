@@ -6,7 +6,7 @@ import Link from "next/link";
 import { MangaMainInfo } from "@/app/models/manga";
 
  function Card({manga}: any) {
- console.log(manga)
+ 
 
   return (
     <div className=" bg-[--colors-black] relative rounded-lg text-center h-auto w-[170px]">
@@ -30,7 +30,7 @@ import { MangaMainInfo } from "@/app/models/manga";
       </div>
 
       <div
-        className={`${montserrat.className} text-white absolute top-0 left-0 right-0 text-center text-xs bg-stone-800 bg-opacity-75 py-2 rounded-t-lg`}
+        className={`${montserrat.className} line-clamp-2 text-white absolute top-0 left-0 right-0 text-center text-xs bg-stone-800 bg-opacity-75 pt-1 ps-1 pe-1 rounded-t-lg`}
       >
         <p>{manga?.name}</p>
       </div>

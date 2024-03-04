@@ -6,7 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import FilterSideBar from "./FilterSideBar";
 import { Tag } from "@/app/models/manga";
-
+import { useRouter } from 'next/navigation';
 const options = [
     "A-Z",
     "Z-A",
@@ -18,6 +18,15 @@ function FilterTopbar({tagsf, params}:{tagsf:string, params:any}) {
   const [showMovilFilter, setShowMovilFilter] = useState(false)
   const filter = useRef<any>(null);
   const tagsT = JSON.parse(tagsf)
+  const router = useRouter();
+  function handleKeyDown(event: any) {
+        
+    if (event.key === 'Enter') {
+        event.preventDefault()
+        router.push(`/biblioteca?type=${type}&tags=${tags.toString()}&dem=${demography}&q=${search}&sort=${sort}`);
+   }
+ }
+
   
   useEffect(() => {
     // only add the event listener when the dropdown is opened
@@ -42,7 +51,7 @@ function FilterTopbar({tagsf, params}:{tagsf:string, params:any}) {
 
   return (
     <div>
-      <div className=" flex items-center justify-between flex-wrap bg-slate-600 py-2 px-4">
+      <div className=" flex items-center justify-between flex-wrap dark:bg-slate-600 bg-slate-50 py-2 px-4">
        <div className="hidden md:flex">
        <Link href={`/biblioteca?type=${type}&tags=${tags.toString()}&dem=${demography}&sort=${sort}`} className="text-center block border border-blue-800 rounded py-2 px-11 bg-blue-700 hover:bg-blue-500 text-white" >Aplicar filtros</Link>
        </div>
@@ -61,7 +70,7 @@ function FilterTopbar({tagsf, params}:{tagsf:string, params:any}) {
           showMovilFilter ? "opacity-100 delay-300" : "opacity-0 delay-0"
         } absolute w-9/12 left-0 top-[125px] z-50 transition-all duration-300 ease-in-out`}>
           <FilterSideBar  tags={tagsT} isMobile={true} params={params}/>
-          <Link href={`/biblioteca?type=${type}&tags=${tags.toString()}&dem=${demography}`} className="text-center block border border-blue-800 py-2 px-11 bg-blue-700 hover:bg-blue-500 text-white" >Aplicar filtros</Link>
+          <Link href={`/biblioteca?type=${type}&tags=${tags.toString()}&dem=${demography}&sort=${sort}`} className="text-center block border border-blue-800 py-2 px-11 bg-blue-700 hover:bg-blue-500 text-white" >Aplicar filtros</Link>
        </div>
        }
 
@@ -74,10 +83,10 @@ function FilterTopbar({tagsf, params}:{tagsf:string, params:any}) {
                 <input
                   type="search"
                   value={search}
-                  className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-e-lg border-s-gray-50 border-s-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
+                  className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-e-lg border-s-gray-300 border-s-1 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
                   placeholder="Search filter results"
                   onChange={(e)=>{e.preventDefault(); setSearch(e.target.value)}}
-                 
+                  onKeyDown={handleKeyDown} 
                 />
                 <a
                   type="button"
@@ -106,7 +115,7 @@ function FilterTopbar({tagsf, params}:{tagsf:string, params:any}) {
           </div>
               <div>
 
-              <DropdownItem options={options} isFilter={true} />
+              <DropdownItem options={options} isFilter={true} params={params.sort}/>
 
               </div>
         

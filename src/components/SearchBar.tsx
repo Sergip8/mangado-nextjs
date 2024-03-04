@@ -31,7 +31,7 @@ function SearchBar() {
     <div>
         <form>
             <div className="flex">
-              <DropdownItem options={options} isFilter={false}/>
+              <DropdownItem options={options} isFilter={false} params=''/>
 
               <div className="relative lg:w-[450px] ms:w-[300px]">
                 <input

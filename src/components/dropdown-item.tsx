@@ -4,7 +4,7 @@ import { filterStateContext } from "@/app/context/FilterContextProvider";
 import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 
-function DropdownItem({ options, isFilter }: { options: any[], isFilter:boolean }) {
+function DropdownItem({ options, isFilter, params }: { options: any[], isFilter:boolean, params:string }) {
   const [isOpen, setIsOpen] = useState(false);
   const {sort, setSort} = filterStateContext()
 
@@ -75,7 +75,7 @@ function DropdownItem({ options, isFilter }: { options: any[], isFilter:boolean 
         </div>
       )} */}
       
-<select onChange={(e) => setSort(e.target.value)} className={`${isFilter? 'rounded-lg':'rounded-s-lg'} flex-shrink-0 z-10 inline-flex py-[11px] px-4 text-sm font-medium text-gray-900 bg-slate-50 border border-gray-300  hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600`}>
+<select defaultValue={params} onChange={(e) => setSort(e.target.value)} className={`${isFilter? 'rounded-lg':'rounded-s-lg'} flex-shrink-0 z-10 inline-flex py-[11px] px-4 text-sm font-medium text-gray-900 bg-slate-50 border border-gray-300  hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600`}>
   <option hidden>
         Ordenar por
   </option>

@@ -80,6 +80,21 @@ function DetailsCard(manga: Manga) {
                     ))}
                   </div>
                 )}
+                {manga.authors.length > 0 && (
+                  <div className=" gap-2 flex flex-wrap items-center mt-3">
+                     <div>
+                        Autores:
+                      </div>
+                    {manga.authors.map((n:any,i:number) => (
+
+                      <Link href={`/biblioteca?author=${[n.id]}`} key={i} className=" mx-2 px-2 bg-slate-400 rounded-sm">
+                        {n.type}: {n.name}
+                      </Link>
+
+                      
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>

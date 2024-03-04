@@ -9,7 +9,7 @@ import { ContextProvider } from "@/app/context/FilterContextProvider";
 const type = [
   "manga",
   "Manhua",
-  " Manhwa",
+  "Manhwa",
   "Novela",
   "One shot",
   "Doujinshi",

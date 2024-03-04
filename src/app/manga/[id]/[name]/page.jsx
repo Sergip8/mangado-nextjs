@@ -15,6 +15,11 @@ async function loadMangaTags(mangaId) {
     mangaId,
   ]);
 }
+async function loadMangaAuthors(mangaId) {
+  return await conn.query("SELECT DISTINCT authors.* FROM manga_main_info JOIN manga_author ON manga_author.manga = ?  JOIN authors ON manga_author.author = authors.id ", [
+    mangaId,
+  ]);
+}
 async function loadChapters(mangaId){
   const data = await conn.query("SELECT chapters.name, chapters.numero, chapters.id FROM chapters WHERE chapters.mangaId = ?",[
     mangaId
@@ -23,7 +28,7 @@ async function loadChapters(mangaId){
 }
 async function loadMangaSuggested(mangaId) {
   try {
-    return await conn.query("SELECT mmi.* FROM manga_main_info mmi JOIN( SELECT COUNT(1) AS count1, pt1.manga FROM manga_tag pt1  WHERE tag in (select tag from manga_tag WHERE manga = ?) AND manga != ? GROUP BY pt1.manga ORDER BY count1 DESC) as m_selected on m_selected.manga = mmi.id", [
+    return await conn.query("SELECT mmi.* FROM manga_main_info mmi JOIN( SELECT COUNT(1) AS count1, pt1.manga FROM manga_tag pt1  WHERE tag in (select tag from manga_tag WHERE manga = ?) AND manga != ? GROUP BY pt1.manga ORDER BY count1 DESC) as m_selected on m_selected.manga = mmi.id limit 4", [
       mangaId,
       mangaId,
     ]);
@@ -42,7 +47,10 @@ async function DetailsMangaPage({params}) {
   const [tags] = await loadMangaTags(params.id)
   const [chapters] = await loadChapters(params.id)
   const [suggested] = await loadMangaSuggested(params.id)
+  const [authors] = await loadMangaAuthors(params.id)
+  
   mangaDetails[0]["tags"] = tags
+  mangaDetails[0]["authors"] = authors
   return (
     <div>
         <Navbar isView={false}/>
@@ -50,7 +58,7 @@ async function DetailsMangaPage({params}) {
         <DetailsCard {...mangaDetails[0]}/>
         <div className='container mx-auto md:px-[100px] flex justify-around'>
         <ChapterList chapters ={chapters} params={params}/>
-        <div className='hidden sm:flex'>
+        <div className='sm:grid-cols-2 '>
         <SideBarDetails suggested={suggested}/>
 
         </div>
