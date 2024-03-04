@@ -15,6 +15,7 @@ async function mangas(offset: number) {
     return results
     
   } catch (error) {
+    console.log(error)
     return []
   }
 }
