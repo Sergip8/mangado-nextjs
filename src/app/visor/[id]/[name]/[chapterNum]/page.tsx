@@ -12,7 +12,7 @@ import { RowDataPacket } from "mysql2";
 async function loadChapterPages(mangaId: number, cap_num: number) {
   try {
     const [res] = await conn.query<RowDataPacket[]>(
-      "SELECT * FROM mangado.chapters_img as pages join chapters on chapters.mangaId = ? and chapters.numero = ? where pages.chapterId = chapters.id",
+      "SELECT * FROM chapters_img as pages join chapters on chapters.mangaId = ? and chapters.numero = ? where pages.chapterId = chapters.id",
       [mangaId, cap_num]
     );
     return res
@@ -56,7 +56,7 @@ async function ViewChapter({
   const pages = await loadChapterPages(params.id, params.chapterNum);
   const [chapterList] = await loadChapterList(params.id);
   const [mangaData]  = await loadMangaInfo(params.id);
-
+  console.log(pages)
   return (
     <div>
       <Navbar isView={true}/>

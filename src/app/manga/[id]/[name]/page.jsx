@@ -58,7 +58,7 @@ async function DetailsMangaPage({params}) {
         <DetailsCard {...mangaDetails[0]}/>
         <div className='container mx-auto md:px-[100px] flex justify-around'>
         <ChapterList chapters ={chapters} params={params}/>
-        <div className='sm:grid-cols-2 '>
+        <div className=' '>
         <SideBarDetails suggested={suggested}/>
 
         </div>

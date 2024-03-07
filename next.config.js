@@ -20,6 +20,12 @@ module.exports = {
           port: '',
           pathname: '/**',
         },
+        {
+          protocol: 'https',
+          hostname: 'mangadoimages1405715681.blob.core.windows.net',
+          port: '',
+          pathname: '/**',
+        },
       ],
     },
     eslint: {
