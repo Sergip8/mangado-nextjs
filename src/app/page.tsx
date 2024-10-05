@@ -69,10 +69,7 @@ export default async function Home({searchParams}:{searchParams:any}) {
               </div>
             ))}
           </div>
-          <div>
             <Pagination page={page} num_pages={Math.ceil(numPages)}/>
-
-          </div>
         </div>
       </div>
     </main>

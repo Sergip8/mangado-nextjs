@@ -22,7 +22,7 @@ module.exports = {
         },
         {
           protocol: 'https',
-          hostname: 'mangadoimages1405715681.blob.core.windows.net',
+          hostname: 'mangado.blob.core.windows.net/mangado-images',
           port: '',
           pathname: '/**',
         },
