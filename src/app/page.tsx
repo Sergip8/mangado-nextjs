@@ -5,6 +5,7 @@ import { MangaMainInfo } from "./models/manga";
 import { RowDataPacket } from "mysql2/promise";
 import Pagination from "@/components/Pagination";
 
+console.log(conn)
 const limit = 20
 const DIGIT_EXPRESSION = /^\d$/;
 async function mangas(offset: number) {

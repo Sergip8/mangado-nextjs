@@ -11,6 +11,7 @@ import { RowDataPacket } from "mysql2";
 
 async function loadChapterPages(mangaId: number, cap_num: number) {
   try {
+    console.log(conn)
     const [res] = await conn.query<RowDataPacket[]>(
       "SELECT * FROM chapters_img as pages join chapters on chapters.mangaId = ? and chapters.numero = ? where pages.chapterId = chapters.id",
       [mangaId, cap_num]

@@ -1,5 +1,5 @@
-import mysql from "mysql2/promise";
-
+import mysql from "mysql2";
+import * as fs from 'fs';
 // export const conn = serverlessMysql({
 //     config:{
 //         host: 'localhost',
@@ -17,12 +17,17 @@ import mysql from "mysql2/promise";
 //         database: "ezyro_35998756_mangado"
 //     }
 // })
-export const conn = await mysql.createConnection({
-    
-        host: process.env.DB_HOST,
-        user: process.env.DB_USER,
-        password: process.env.DB_PASS,
+const host = process.env.DB_HOST
+const user = process.env.DB_USER
+const password = process.env.DB_PASS
+const database = process.env.DB_DATABASE
+const pool = mysql.createPool({
+
+        host: host,
+        user: user,
+        password: '$Agp860720',
         port: 3306,
-        database: process.env.DB_DATABASE,
-   
+        database: database,
 })
+
+export const conn = pool.promise()

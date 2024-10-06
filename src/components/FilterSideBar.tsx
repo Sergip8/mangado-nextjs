@@ -1,10 +1,7 @@
 
 import React from "react";
 import ItemsRadio from "./ItemsRadio";
-import { conn } from "@/libs/mysql";
 import ItemCheckbox from "./ItemCheckbox";
-import { Tag } from "@/app/models/manga";
-import { ContextProvider } from "@/app/context/FilterContextProvider";
 
 const type = [
   "manga",
