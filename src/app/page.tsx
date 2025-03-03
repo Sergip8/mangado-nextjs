@@ -39,11 +39,10 @@ async function mangasCount() {
       SELECT COUNT(*) AS count FROM manga_main_info
     `;
     const pool = await getConnection()
-    const countResult = pool
+    const countResult = await pool
       .request()
       .query(countQuery);
-
-    console.log("count: " + countResult.recordset[0].count);
+    
 
     return countResult.recordset[0].count / limit;
     

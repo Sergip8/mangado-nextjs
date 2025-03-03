@@ -30,7 +30,7 @@ async function getFilterResults(params: any, offset: number, limit: number) {
   // Convertir tags a números
   if (params.tags) {
     const tagSplit = params.tags.split(",");
-    tags = tagSplit.map((t: string) => parseInt(t)).filter(t => !isNaN(t)); // Filtra valores no numéricos
+    tags = tagSplit.map((t: string) => parseInt(t)).filter((t:any) => !isNaN(t)); // Filtra valores no numéricos
   }
 
   let type = "";
@@ -74,7 +74,7 @@ async function getFilterResults(params: any, offset: number, limit: number) {
 
   // Filtrar por autor
   if (params.author) {
-    const authorIds = params.author.split(",").map((a: string) => parseInt(a)).filter(a => !isNaN(a)); // Convertir a números
+    const authorIds = params.author.split(",").map((a: string) => parseInt(a)).filter((a:any) => !isNaN(a)); // Convertir a números
     if (authorIds.length > 0) {
       author = `AND m.id IN (SELECT manga FROM manga_author WHERE author IN (${authorIds.join(",")}))`;
     }
