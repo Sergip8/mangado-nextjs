@@ -4,50 +4,73 @@ import Navbar from '@/components/Navbar'
 import { conn } from "@/libs/mysql";
 import ChapterList from '@/components/chapter-list';
 import SideBarDetails from '@/components/SideBarDetails';
+import  {getConnection } from "@/libs/mssql";
+import sql from "mssql";
+
+
 
 async function loadMangaDetails(mangaId) {
-  return await conn.query("SELECT manga_main_info.*, manga_details.* FROM manga_main_info JOIN manga_details ON manga_main_info.id = ?", [
-    mangaId,
-  ]);
+  const pool = await getConnection();
+  const result = await pool.request()
+      .input('mangaId', sql.Int, mangaId)
+      .query("SELECT manga_main_info.*, manga_details.* FROM manga_main_info JOIN manga_details ON manga_main_info.id = @mangaId");
+  return result.recordset;
 }
+
 async function loadMangaTags(mangaId) {
-  return await conn.query("SELECT DISTINCT tags.* FROM manga_main_info JOIN manga_tag ON manga_tag.manga = ?  JOIN tags ON manga_tag.tag = tags.id ", [
-    mangaId,
-  ]);
+  const pool = await getConnection();
+  const result = await pool.request()
+      .input('mangaId', sql.Int, mangaId)
+      .query("SELECT DISTINCT tags.* FROM manga_main_info JOIN manga_tag ON manga_tag.manga = @mangaId JOIN tags ON manga_tag.tag = tags.id");
+  return result.recordset;
 }
+
 async function loadMangaAuthors(mangaId) {
-  return await conn.query("SELECT DISTINCT authors.* FROM manga_main_info JOIN manga_author ON manga_author.manga = ?  JOIN authors ON manga_author.author = authors.id ", [
-    mangaId,
-  ]);
+  const pool = await getConnection();
+  const result = await pool.request()
+      .input('mangaId', sql.Int, mangaId)
+      .query("SELECT DISTINCT authors.* FROM manga_main_info JOIN manga_author ON manga_author.manga = @mangaId JOIN authors ON manga_author.author = authors.id");
+  return result.recordset;
 }
-async function loadChapters(mangaId){
-  const data = await conn.query("SELECT chapters.name, chapters.numero, chapters.id FROM chapters WHERE chapters.mangaId = ?",[
-    mangaId
-  ])
-  return data
+
+async function loadChapters(mangaId) {
+  const pool = await getConnection();
+  const result = await pool.request()
+      .input('mangaId', sql.Int, mangaId)
+      .query("SELECT chapters.name, chapters.numero, chapters.id FROM chapters WHERE chapters.mangaId = @mangaId");
+  return result.recordset;
 }
+
 async function loadMangaSuggested(mangaId) {
   try {
-    return await conn.query("SELECT mmi.* FROM manga_main_info mmi JOIN( SELECT COUNT(1) AS count1, pt1.manga FROM manga_tag pt1  WHERE tag in (select tag from manga_tag WHERE manga = ?) AND manga != ? GROUP BY pt1.manga ORDER BY count1 DESC) as m_selected on m_selected.manga = mmi.id limit 4", [
-      mangaId,
-      mangaId,
-    ]);
-    
+      const pool = await getConnection();
+      const result = await pool.request()
+          .input('mangaId', sql.Int, mangaId)
+          .query(`
+              SELECT mmi.* 
+              FROM manga_main_info mmi 
+              JOIN (SELECT COUNT(1) AS count1, pt1.manga 
+                    FROM manga_tag pt1  
+                    WHERE tag IN (SELECT tag FROM manga_tag WHERE manga = @mangaId) 
+                    AND manga != @mangaId 
+                    GROUP BY pt1.manga 
+                    ORDER BY count1 DESC) AS m_selected 
+              ON m_selected.manga = mmi.id 
+              LIMIT 4`);
+      return result.recordset;
   } catch (error) {
-    return []
-  }finally{
-    
-
+      console.error(error);
+      return [];
   }
 }
 
 
 async function DetailsMangaPage({params}) {
-  const [mangaDetails] = await loadMangaDetails(params.id)
-  const [tags] = await loadMangaTags(params.id)
-  const [chapters] = await loadChapters(params.id)
-  const [suggested] = await loadMangaSuggested(params.id)
-  const [authors] = await loadMangaAuthors(params.id)
+  const mangaDetails= await loadMangaDetails(params.id)
+  const tags = await loadMangaTags(params.id)
+  const chapters = await loadChapters(params.id)
+  const suggested = await loadMangaSuggested(params.id)
+  const authors = await loadMangaAuthors(params.id)
   
   mangaDetails[0]["tags"] = tags
   mangaDetails[0]["authors"] = authors

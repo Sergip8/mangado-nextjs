@@ -38,6 +38,12 @@ module.exports = {
           port: '',
           pathname: '/mangado-images/**',
         },
+        {
+          protocol: 'https',
+          hostname: 'i.ibb.co',
+          port: '',
+          pathname: '/**',
+        },
       ],
     },
     eslint: {

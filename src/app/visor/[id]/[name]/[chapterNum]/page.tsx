@@ -6,45 +6,80 @@ import Navbar from "@/components/Navbar";
 import ChapterListSelect from "@/components/ChapterListSelect";
 import PrevNext from "@/components/PrevNext";
 import Link from "next/link";
-import { RowDataPacket } from "mysql2";
+import  {getConnection } from "@/libs/mssql";
 
 
 async function loadChapterPages(mangaId: number, cap_num: number) {
+  let pool; // Declarar la conexión fuera del try para poder cerrarla en el finally
   try {
-    console.log(conn)
-    const [res] = await conn.query<RowDataPacket[]>(
-      "SELECT * FROM chapters_img as pages join chapters on chapters.mangaId = ? and chapters.numero = ? where pages.chapterId = chapters.id",
-      [mangaId, cap_num]
-    );
-    return res
+      pool = await getConnection(); // Obtener la conexión a la base de datos
+
+      const query = `
+          SELECT pages.* 
+          FROM chapters_img AS pages 
+          JOIN chapters ON chapters.mangaId = @mangaId AND chapters.numero = @cap_num 
+          WHERE pages.chapterId = chapters.id
+      `;
+
+      const result = await pool.request()
+          .input("mangaId", mangaId)
+          .input("cap_num", cap_num)
+          .query(query);
+
+      return result.recordset; // Devolver los registros obtenidos
   } catch (error) {
-    return []
-  }finally{
-    
+      console.error("Error in loadChapterPages:", error); // Registrar el error
+      return []; // Devolver un array vacío en caso de error
+  } finally {
+      
   }
 }
 
 async function loadChapterList(mangaId: number) {
+  let pool; // Declarar la conexión fuera del try para poder cerrarla en el finally
   try {
-    return await conn.query<RowDataPacket[]>(
-      "SELECT chapters.* FROM chapters where chapters.mangaId = ?",
-      [mangaId]
-    );
-    
+      pool = await getConnection(); // Obtener la conexión a la base de datos
+
+      const query = `
+          SELECT chapters.* 
+          FROM chapters 
+          WHERE chapters.mangaId = @mangaId
+      `;
+
+      const result = await pool.request()
+          .input("mangaId", mangaId)
+          .query(query);
+
+      return result.recordset; // Devolver los registros obtenidos
   } catch (error) {
-    return []
+      console.error("Error in loadChapterList:", error); // Registrar el error
+      return []; // Devolver un array vacío en caso de error
+  } finally {
+   
   }
 }
 async function loadMangaInfo(mangaId: number) {
+  let pool;
   try {
-    return await conn.query<RowDataPacket[]>(
-      "SELECT manga_main_info.name, manga_main_info.id FROM manga_main_info where id = ?",
-      [mangaId]
-    );
+      pool = await getConnection(); 
+
+      const query = `
+          SELECT manga_main_info.name, manga_main_info.id 
+          FROM manga_main_info 
+          WHERE id = @mangaId
+      `;
+
+      const result = await pool.request()
+          .input("mangaId", mangaId)
+          .query(query);
+
+      return result.recordset[0] || {};
   } catch (error) {
-    return []
+      console.error("Error in loadMangaInfo:", error); 
+      return {}; 
+  } finally {
+    
   }
-  
 }
 
 async function ViewChapter({
@@ -55,8 +90,8 @@ async function ViewChapter({
   searchParams: any;
 }) {
   const pages = await loadChapterPages(params.id, params.chapterNum);
-  const [chapterList] = await loadChapterList(params.id);
-  const [mangaData]  = await loadMangaInfo(params.id);
+  const chapterList = await loadChapterList(params.id);
+  const mangaData  = await loadMangaInfo(params.id);
   console.log(pages)
   return (
     <div>
@@ -64,14 +99,14 @@ async function ViewChapter({
       <div className="hero container max-w-screen-lg mx-auto pb-10 mt-[20px]">
         
         <div>
-          <h1 className="text-4xl font-bold mb-2">{mangaData[0].name}</h1>
+          <h1 className="text-4xl font-bold mb-2">{mangaData.name}</h1>
         </div>
 
     
         <div className="md:flex justify-around items-center py-2">
         <Link
               href="/manga/[mangaId]/[name]"
-              as={`/manga/${mangaData[0].id}/${mangaData[0].name.replaceAll(
+              as={`/manga/${mangaData.id}/${mangaData.name.replaceAll(
                 " ",
                 "-"
               )}`}
@@ -88,11 +123,11 @@ async function ViewChapter({
 
           <div className="flex items-center gap-5">
            
-            <ChapterListSelect chapters={JSON.stringify(chapterList)} mangaName={mangaData[0].name} mangaId={mangaData[0].id} screenParam={searchParams.screen} chapterParam={params.chapterNum}/>
+            <ChapterListSelect chapters={JSON.stringify(chapterList)} mangaName={mangaData.name} mangaId={mangaData.id} screenParam={searchParams.screen} chapterParam={params.chapterNum}/>
           </div>
         </div>
       </div>
-      {pages.map((p, i) => (
+      {pages.map((p:any, i:number) => (
         <div key={i}>
           <Image
             priority={i < 4}
@@ -101,7 +136,7 @@ async function ViewChapter({
             width={0}
             height={0}
             sizes="100vw"
-            alt={mangaData[0].name}
+            alt={mangaData.name}
             className={
               !searchParams.screen || searchParams.screen === "adjust"
                 ? "md:container md:mx-auto md:w-9/12 w-full"

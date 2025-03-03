@@ -9,6 +9,8 @@ import Card from '@/components/Card'
 import { MangaMainInfo, Tag } from '../models/manga'
 import { RowDataPacket } from 'mysql2/promise'
 import Pagination from '@/components/Pagination'
+import  {getConnection } from "@/libs/mssql";
+import sql from "mssql";
 
 const sort_conv = {
   "A-Z": "name ASC",
@@ -20,77 +22,129 @@ const sort_conv = {
 const limit = 20
 const DIGIT_EXPRESSION = /^\d$/;
 
-async function getFilterResults(params:any, offset: number) {
-  let tags:number[] = []
-  let author = ""
-  const search = params.q || ""
-  if(params.tags){
-    const tagSplit:string[] = params.tags.split(",")
-  
-    tags = tagSplit.map(t =>{
-      return +t
-    })
+async function getFilterResults(params: any, offset: number, limit: number) {
+  let tags: number[] = [];
+  let author = "";
+  const search = params.q || "";
+
+  // Convertir tags a números
+  if (params.tags) {
+    const tagSplit = params.tags.split(",");
+    tags = tagSplit.map((t: string) => parseInt(t)).filter(t => !isNaN(t)); // Filtra valores no numéricos
   }
 
-  let type = ""
-  let dem = ""
-  let tagsQ = ""
-  let sort= ""
-  let sort_str: "A-Z" | "Z-A" |"Num Capitulos" | "" = ""
-  let  sort_capQ1 = ""
-  let  sort_capQ2 = ""
-  let  sort_capQ3 = ""
+  let type = "";
+  let dem = "";
+  let tagsQ = "";
+  let sort = "ORDER BY id";
+  let sort_capQ2 = "";
 
-  
-    if(params.type){
-        type = `AND type = '${params.type.toUpperCase()}'`
-    }
-    if(params.dem){
-      dem = `AND demography = '${params.dem.toUpperCase()}'`
-    }
-    if(params.sort){
-      if(sort_conv.hasOwnProperty(params.sort)){
-        sort_str = params.sort
-        if(sort_str === "A-Z")
-        sort = `ORDER BY name ASC`
-      if(sort_str === "Z-A")
-      sort = `ORDER BY name DESC`
-    if(sort_str === "Num Capitulos"){
-      sort_capQ1 = "m."
-      sort_capQ2 = " m join manga_details md on m.id = md.mangaId "
-      sort_capQ3 = "order by md.num_chapters ASC"
+  // Filtrar por tipo
+  if (params.type) {
+    type = `AND type = '${params.type.toUpperCase()}'`;
+  }
+
+  // Filtrar por demografía
+  if (params.dem) {
+    dem = `AND demography = '${params.dem.toUpperCase()}'`;
+  }
+
+  // Ordenar resultados
+  if (params.sort) {
+    const sort_conv: { [key: string]: string } = {
+      "Nombre": "name ASC",
+      "Fecha de lanzamiento": "release_date ASC",
+      "Num Capitulos": "md.num_chapters ASC",
+    };
+
+    if (sort_conv.hasOwnProperty(params.sort)) {
+      const sort_str = params.sort;
+      sort = `ORDER BY ${sort_conv[sort_str]}`;
+
+      if (sort_str === "Num Capitulos") {
+        sort_capQ2 = "JOIN manga_details md ON m.id = md.mangaId";
+      }
     }
   }
-  console.log(sort)
-}
-if(tags.length>0){
-  tagsQ = `AND id IN (SELECT manga FROM manga_tag WHERE tag IN (${tags.join()}))`
-  console.log(tagsQ)
-}
-if(params.author){
-  author = `AND id IN (SELECT manga FROM manga_author WHERE author IN  (${params.author}))`
-  
-}
 
-  
-try {
-  console.log(`SELECT ${sort_capQ1}* FROM manga_main_info ${sort_capQ2} WHERE name LIKE ? ${type} ${dem} ${author} ${tagsQ} ${sort} ${sort_capQ3}`)
-  const [res] = await conn.query<RowDataPacket[]>(`SELECT ${sort_capQ1}* FROM manga_main_info ${sort_capQ2} WHERE name LIKE ? ${type} ${dem}  ${author} ${tagsQ} ${sort} ${sort_capQ3} LIMIT ${limit} OFFSET ${offset}`,[
-    `%${search}%`
-  ])
-  const [count]  = await conn.query<RowDataPacket[]>(`SELECT count(*) as count FROM manga_main_info ${sort_capQ2} WHERE name LIKE ? ${type} ${dem} ${author} ${tagsQ} ${sort} ${sort_capQ3} `,[
-    `%${search}%`
-  ])
-  const page= count[0]["count"]/limit
-  return {res:res,page:page}
-} catch (error) {
-  return []
-}
-}
+  // Filtrar por tags
+  if (tags.length > 0) {
+    tagsQ = `AND m.id IN (SELECT manga FROM manga_tag WHERE tag IN (${tags.join(",")}))`;
+  }
 
+  // Filtrar por autor
+  if (params.author) {
+    const authorIds = params.author.split(",").map((a: string) => parseInt(a)).filter(a => !isNaN(a)); // Convertir a números
+    if (authorIds.length > 0) {
+      author = `AND m.id IN (SELECT manga FROM manga_author WHERE author IN (${authorIds.join(",")}))`;
+    }
+  }
+
+  const pool = await getConnection(); // Obtener conexión
+  try {
+
+    // Consulta principal
+    let query = `
+      SELECT m.* 
+      FROM manga_main_info m 
+      ${sort_capQ2} 
+      WHERE name LIKE @search 
+      ${type} 
+      ${dem} 
+      ${author} 
+      ${tagsQ} 
+      ${sort} 
+      OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY
+    `;
+
+    const result = await pool
+      .request()
+      .input("search", `%${search}%`)
+      .input("offset", offset)
+      .input("limit", limit)
+      .query(query);
+
+    // Consulta para contar el total de registros
+    let countQuery = `
+      SELECT COUNT(*) AS count 
+      FROM manga_main_info m 
+      ${sort_capQ2} 
+      WHERE name LIKE @search 
+      ${type} 
+      ${dem} 
+      ${author} 
+      ${tagsQ}
+    `;
+
+    const countResult = await pool
+      .request()
+      .input("search", `%${search}%`)
+      .query(countQuery);
+
+    const totalCount = countResult.recordset[0].count;
+    const totalPages = Math.ceil(totalCount / limit); // Calcular el número total de páginas
+
+    return { res: result.recordset, totalPages: totalPages };
+  } catch (error) {
+    console.error("Error in getFilterResults:", error);
+    return { res: [], totalPages: 0 };
+  }
+}
+async function loadTags() {
+  let pool; // Declarar la conexión fuera del try para poder cerrarla en el finally
+  try {
+      pool = await getConnection(); // Obtener la conexión a la base de datos
+      const result = await pool.request().query("SELECT tags.name, tags.id FROM tags");
+      return result.recordset; // Devolver los registros obtenidos
+  } catch (error) {
+      console.error("Error in loadTags:", error); // Usar console.error para errores
+      return []; // Devolver un array vacío en caso de error
+  } 
+}
 
 async function Biblioteca({ searchParams  }:{searchParams :any}) {
   let page = 0
+  const tags = await loadTags()
   const offset = ():number =>{
     if(searchParams){
       if(searchParams.page && DIGIT_EXPRESSION.test(searchParams.page)){
@@ -115,21 +169,13 @@ async function Biblioteca({ searchParams  }:{searchParams :any}) {
   
   if(searchParams){
     if(searchParams.type != "" || searchParams.tags !== "" || searchParams.dem !="" || searchParams.q !=""  ){
-      results = await getFilterResults(searchParams, _offset)
+      results = await getFilterResults(searchParams, _offset, limit)
       
     }
   }
-  async function loadTags() {
-    try {
-      return await conn.execute("SELECT tags.name, tags.id FROM tags")
-    } catch (error) {
-      console.log(error)
-      return []
-    }
-    
-}
+  
   console.log(searchParams)
-  const [tags] = await loadTags()
+ 
  
   return (
     <div className='container mx-auto '>

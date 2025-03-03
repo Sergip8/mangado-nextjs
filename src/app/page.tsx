@@ -1,32 +1,51 @@
 import Card from "@/components/Card";
 import Navbar from "@/components/Navbar";
-import { conn } from "@/libs/mysql";
 import { MangaMainInfo } from "./models/manga";
 import { RowDataPacket } from "mysql2/promise";
 import Pagination from "@/components/Pagination";
+import  {getConnection } from "@/libs/mssql";
+import sql from "mssql";
 
-console.log(conn)
+
 const limit = 20
+
 const DIGIT_EXPRESSION = /^\d$/;
-async function mangas(offset: number) {
+async function mangas(offset: number ) {
  
   try {
-    const [results] = await conn.execute<RowDataPacket[]>(`SELECT * FROM manga_main_info LIMIT ${limit} OFFSET ${offset}`);
-    
-    return results
-    
+    const query = `
+      SELECT * FROM manga_main_info 
+      ORDER BY id 
+      OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY
+    `;
+  
+    const pool = await getConnection();
+    const results = await pool
+      .request()
+      .input("offset", sql.Int, offset)
+      .input("limit", sql.Int, limit)
+      .query(query);
+  
+    console.log(results.recordset);
+    return results.recordset; // Devuelve solo los datos sin metadatos
   } catch (error) {
-    console.log(error)
-    return []
+    console.error("Error ejecutando la consulta:", error);
+    return [];
   }
 }
 async function mangasCount() {
- 
   try {
-    const [count] = await conn.execute<RowDataPacket[]>(`SELECT COUNT(*) as count FROM manga_main_info`);
-    console.log(count)
-    
-    return count[0]["count"]/limit
+    const countQuery = `
+      SELECT COUNT(*) AS count FROM manga_main_info
+    `;
+    const pool = await getConnection()
+    const countResult = pool
+      .request()
+      .query(countQuery);
+
+    console.log("count: " + countResult.recordset[0].count);
+
+    return countResult.recordset[0].count / limit;
     
   } catch (error) {
     return 0
@@ -63,7 +82,7 @@ export default async function Home({searchParams}:{searchParams:any}) {
         <Navbar  isView={false}/>
         <div className="container mx-auto px-4 mt-[100px]">
           <div className="flex flex-wrap ">
-            {mangasList.map((m,i) => (
+            {mangasList.map((m:any,i:number) => (
               <div key={i} className="mx-2 my-2">
                 <Card  manga={m} />
 

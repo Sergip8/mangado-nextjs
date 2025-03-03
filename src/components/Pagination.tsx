@@ -11,7 +11,6 @@ function Pagination({page, num_pages}:{page:number, num_pages:number}) {
         
         router.push(currentUrl+`?page=${p+1}`);
     }
-    console.log(currPage)
     useEffect(() => {
         // 2.1: create `URL` from `window` URL
         const url = new URL(window.location.href);
