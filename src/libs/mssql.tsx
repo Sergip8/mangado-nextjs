@@ -7,7 +7,7 @@ async function getConnection(): Promise<ConnectionPool> {
         server: process.env.DB_SERVER, 
         database: process.env.DB_NAME, 
         user: process.env.DB_USER, 
-        password: "$Aa123456", 
+        password: process.env.DB_PASSWORD, 
         options: {
           encrypt: true, 
           trustServerCertificate: false,
