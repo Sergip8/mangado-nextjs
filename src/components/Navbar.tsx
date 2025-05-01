@@ -24,6 +24,9 @@ function Navbar({isView}:{isView:boolean}) {
           <li className="p-4 ">
             <Link href="/biblioteca">Biblioteca</Link>
           </li>
+          <li className="p-4 ">
+            <Link href="/manga-traslate">Traductor</Link>
+          </li>
           <li className="p-4">
           <ThemeSwitch/>
           </li>

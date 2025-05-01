@@ -1,7 +1,6 @@
 import Card from "@/components/Card";
 import Navbar from "@/components/Navbar";
-import { MangaMainInfo } from "./models/manga";
-import { RowDataPacket } from "mysql2/promise";
+
 import Pagination from "@/components/Pagination";
 import  {getConnection } from "@/libs/mssql";
 import sql from "mssql";
@@ -78,7 +77,7 @@ export default async function Home({searchParams}:{searchParams:any}) {
   return (
     <main>
       <div>
-        <Navbar  isView={false}/>
+       
         <div className="container mx-auto px-4 mt-[100px]">
           <div className="flex flex-wrap ">
             {mangasList.map((m:any,i:number) => (

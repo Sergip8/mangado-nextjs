@@ -1,12 +1,12 @@
 "use client";
 
-import { filterStateContext } from "@/app/context/FilterContextProvider";
+import { useFilterStateContext } from "@/app/context/FilterContextProvider";
 import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 
 function DropdownItem({ options, isFilter, params }: { options: any[], isFilter:boolean, params:string }) {
   const [isOpen, setIsOpen] = useState(false);
-  const {sort, setSort} = filterStateContext()
+  const {sort, setSort} = useFilterStateContext()
 
   const dropdown = useRef<any>(null);
   useEffect(() => {

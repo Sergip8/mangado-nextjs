@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useRef, useState } from "react";
 import DropdownItem from "./dropdown-item";
-import { filterStateContext } from "@/app/context/FilterContextProvider";
+import { useFilterStateContext } from "@/app/context/FilterContextProvider";
 import Link from "next/link";
 import Image from "next/image";
 import FilterSideBar from "./FilterSideBar";
@@ -14,7 +14,7 @@ const options = [
 ]
 
 function FilterTopbar({tagsf, params}:{tagsf:string, params:any}) {
-  const {type, tags, demography, search,  setSearch, sort} = filterStateContext()
+  const {type, tags, demography, search,  setSearch, sort} = useFilterStateContext()
   const [showMovilFilter, setShowMovilFilter] = useState(false)
   const filter = useRef<any>(null);
   const tagsT = JSON.parse(tagsf)

@@ -3,7 +3,7 @@ import Image from "next/image";
 import { montserrat } from "@/app/styles/fonts";
 
 import Link from "next/link";
-import { MangaMainInfo } from "@/app/models/manga";
+
 
  function Card({manga}: any) {
  

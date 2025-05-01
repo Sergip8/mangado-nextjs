@@ -95,7 +95,7 @@ async function ViewChapter({
   console.log(pages)
   return (
     <div>
-      <Navbar isView={true}/>
+
       <div className="hero container max-w-screen-lg mx-auto pb-10 mt-[20px]">
         
         <div>

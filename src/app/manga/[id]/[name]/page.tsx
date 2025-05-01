@@ -9,7 +9,7 @@ import sql from "mssql";
 
 
 
-async function loadMangaDetails(mangaId) {
+async function loadMangaDetails(mangaId: number) {
   const pool = await getConnection();
   const result = await pool.request()
       .input('mangaId', sql.Int, mangaId)
@@ -17,7 +17,7 @@ async function loadMangaDetails(mangaId) {
   return result.recordset;
 }
 
-async function loadMangaTags(mangaId) {
+async function loadMangaTags(mangaId: number) {
   const pool = await getConnection();
   const result = await pool.request()
       .input('mangaId', sql.Int, mangaId)
@@ -25,7 +25,7 @@ async function loadMangaTags(mangaId) {
   return result.recordset;
 }
 
-async function loadMangaAuthors(mangaId) {
+async function loadMangaAuthors(mangaId: number) {
   const pool = await getConnection();
   const result = await pool.request()
       .input('mangaId', sql.Int, mangaId)
@@ -33,7 +33,7 @@ async function loadMangaAuthors(mangaId) {
   return result.recordset;
 }
 
-async function loadChapters(mangaId) {
+async function loadChapters(mangaId: number) {
   const pool = await getConnection();
   const result = await pool.request()
       .input('mangaId', sql.Int, mangaId)
@@ -41,7 +41,7 @@ async function loadChapters(mangaId) {
   return result.recordset;
 }
 
-async function loadMangaSuggested(mangaId) {
+async function loadMangaSuggested(mangaId: number) {
   try {
       const pool = await getConnection();
       const result = await pool.request()
@@ -65,7 +65,11 @@ async function loadMangaSuggested(mangaId) {
 }
 
 
-async function DetailsMangaPage({params}) {
+interface Params {
+  id: number;
+}
+
+async function DetailsMangaPage({ params }: { params: Params }) {
   const mangaDetails= await loadMangaDetails(params.id)
   const tags = await loadMangaTags(params.id)
   const chapters = await loadChapters(params.id)
@@ -76,7 +80,7 @@ async function DetailsMangaPage({params}) {
   mangaDetails[0]["authors"] = authors
   return (
     <div>
-        <Navbar isView={false}/>
+        
         <div className='mt-[100px]'>
         <DetailsCard {...mangaDetails[0]}/>
         <div className='container mx-auto md:px-[100px] flex justify-around'>

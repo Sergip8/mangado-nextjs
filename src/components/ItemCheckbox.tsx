@@ -1,14 +1,14 @@
 "use client";
 import { Tag } from '@/app/models/manga';
 import React, { useEffect, useState } from 'react'
-import {filterStateContext} from "@/app/context/FilterContextProvider"
+import {useFilterStateContext} from "@/app/context/FilterContextProvider"
 
 
 
 function ItemCheckbox({item, tagsSelected}:{item: string, tagsSelected:string}) {
   console.log(tagsSelected)
   
-  const {tags, setTags} = filterStateContext()
+  const {tags, setTags} = useFilterStateContext()
   const itemJson: Tag[] = JSON.parse(item)
 
   useEffect(()=>{

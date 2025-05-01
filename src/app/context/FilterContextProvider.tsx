@@ -1,6 +1,5 @@
 'use client'
-import { Context, ReactNode, createContext, useContext, useState } from "react";
-import { Tag } from "../models/manga";
+import { ReactNode, createContext, useContext, useState } from "react";
 
 type filterContextType = {
     tags: number[],
@@ -73,7 +72,7 @@ export const ContextProvider = ({children}:{children:ReactNode}) => {
         </>
     )
 }
-export function filterStateContext() {
+export function useFilterStateContext() {
     return useContext(FilterContext)
 }
 

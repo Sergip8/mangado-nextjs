@@ -7,10 +7,10 @@ import { conn } from '@/libs/mysql'
 
 import Card from '@/components/Card'
 import { MangaMainInfo, Tag } from '../models/manga'
-import { RowDataPacket } from 'mysql2/promise'
+
 import Pagination from '@/components/Pagination'
 import  {getConnection } from "@/libs/mssql";
-import sql from "mssql";
+
 
 const sort_conv = {
   "A-Z": "name ASC",
@@ -179,9 +179,9 @@ async function Biblioteca({ searchParams  }:{searchParams :any}) {
  
   return (
     <div className='container mx-auto '>
-        <Navbar isView={false}/>
+       
         <ContextProvider>
-        <div className='mt-[80px]'>
+        <div className=''>
         <FilterTopbar tagsf={JSON.stringify(tags)} params={searchParams}/>
         <div className='flex h-fit'>
         <div className='hidden md:flex'>

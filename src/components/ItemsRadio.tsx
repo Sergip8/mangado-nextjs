@@ -1,9 +1,9 @@
 "use client"
-import { filterStateContext } from '@/app/context/FilterContextProvider'
+import { useFilterStateContext } from '@/app/context/FilterContextProvider'
 import React, { useEffect } from 'react'
 
 function ItemsRadio({item, param, searchParams}:{item: string[], param:string, searchParams:string}) {
-  const {type, setType, demography, setDemography} = filterStateContext()
+  const {type, setType, demography, setDemography} = useFilterStateContext()
 
   useEffect(()=>{
     if(searchParams){
